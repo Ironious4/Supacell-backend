@@ -12,7 +12,7 @@ DATABASE = os.environ.get(
     "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://supa-cell-frontend-mk4z.vercel.app/"]}})
+CORS(app, resources={r"/heroes": {"origins": ["https://supa-cell-frontend-mk4z.vercel.app/"]}})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
