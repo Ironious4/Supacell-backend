@@ -3,6 +3,7 @@
 from flask import Flask, request, make_response, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
+from flask_cors import CORS
 from models import db, Hero, Power, HeroPower
 import os
 
@@ -11,6 +12,8 @@ DATABASE = os.environ.get(
     "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": ["https://supa-cell-frontend-mk4z.vercel.app/"]}})
+
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
