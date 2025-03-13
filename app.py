@@ -21,7 +21,7 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    return '<h1>Code challenge</h1>'
+    return '<h1>SupaCell</h1>'
 
 @app.route('/heroes', methods=['GET'])
 def heroes():
