@@ -12,8 +12,7 @@ DATABASE = os.environ.get(
     "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
 
 app = Flask(__name__)
-CORS(app, resources={r"/heroes": {"origins": ["https://supa-cell-frontend-mk4z.vercel.app/", "https://supa-cell-frontend.vercel.app"]}})
-
+CORS(app)  # Allow all origins for testing
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -140,6 +139,19 @@ def create_hero_power():
 
     return jsonify(response_data), 201
 
+
+
+
+
+
+@app.route('/hero_powers/<int:id>', methods=['DELETE'])
+def delete_hero_power(id):
+    hero_power = HeroPower.query.get(id)
+    if hero_power is None:
+        return jsonify({"error": "Hero Power not found"}), 404
+    db.session.delete(hero_power)
+    db.session.commit()
+    return jsonify({"message": "Hero Power deleted successfully"}), 200
 
 
 
