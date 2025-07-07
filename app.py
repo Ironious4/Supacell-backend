@@ -4,6 +4,7 @@ from flask import Flask, request, make_response, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_cors import CORS
+from flask_mysqldb import MySQL
 from models import db, Hero, Power, HeroPower
 import os
 
@@ -166,4 +167,4 @@ def delete_hero_power(id):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(debug=True)
