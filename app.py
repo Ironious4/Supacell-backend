@@ -16,15 +16,25 @@ CORS(app)  # Allow all origins for testing
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MYSQL_HOST'] = 'gateway01.eu-central-1.prod.aws.tidbcloud.com'
+app.config['MYSQL_PORT'] = 4000
+app.config['MYSQL_USER'] = '2wzHdmFpocYGaEr.root'
+app.config['MYSQL_PASSWORD'] = 'INb2B81TQp1BgyY5'
+app.config['MYSQL_DB'] = 'test'  # Default DB
 app.json.compact = False
 
 migrate = Migrate(app, db)
+mysql = MySQL(app)
 
 db.init_app(app)
 
 @app.route('/')
-def index():
-    return '<h1>SupaCell</h1>'
+def home():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT 1")  # Test query
+    result = cursor.fetchone()
+    return f"TiDB Connected! Query result: {result}"
+
 
 @app.route('/heroes', methods=['GET'])
 def heroes():
