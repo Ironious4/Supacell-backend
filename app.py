@@ -5,6 +5,8 @@ from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_cors import CORS
 from flask_mysqldb import MySQL
+import pymysql  # This import was missing
+from pymysql.cursors import DictCursor 
 from models import db, Hero, Power, HeroPower
 import os
 
@@ -17,11 +19,16 @@ CORS(app)  # Allow all origins for testing
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['MYSQL_HOST'] = 'gateway01.eu-central-1.prod.aws.tidbcloud.com'
-app.config['MYSQL_PORT'] = 4000
-app.config['MYSQL_USER'] = '2wzHdmFpocYGaEr.root'
-app.config['MYSQL_PASSWORD'] = 'INb2B81TQp1BgyY5'
-app.config['MYSQL_DB'] = 'test'  # Default DB
+
+db_config = {
+    'host': 'gateway01.eu-central-1.prod.aws.tidbcloud.com',
+    'port': 4000,
+    'user': '2wzHdmFpocYGaEr.root',
+    'password': 'INb2B81TQp1BgyY5',
+    'database': 'test',
+    'cursorclass': pymysql.cursors.DictCursor
+}
+
 app.json.compact = False
 
 migrate = Migrate(app, db)
@@ -31,10 +38,14 @@ db.init_app(app)
 
 @app.route('/')
 def home():
-    cursor = mysql.connection.cursor()
-    cursor.execute("SELECT 1")  # Test query
-    result = cursor.fetchone()
-    return f"TiDB Connected! Query result: {result}"
+    connection = pymysql.connect(**db_config)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            result = cursor.fetchone()
+        return f"Database connection working! Result: {result}"
+    finally:
+        connection.close()
 
 
 @app.route('/heroes', methods=['GET'])
@@ -167,4 +178,4 @@ def delete_hero_power(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
